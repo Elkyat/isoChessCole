@@ -48,8 +48,8 @@ tileBlack.src = 'assets/resource images/tileRed.png'; // Asumí que el nombre co
 const tileWhite = new Image();
 tileWhite.src = 'assets/resource images/tileWhite.png'; // Asumí que el nombre correcto es tileWhite
 
-const selectedTile = new Image();
-selectedTile.src = 'assets/resource images/selectedTile.png'; // Imagen para tile seleccionado
+const selectedTileImage = new Image();
+selectedTileImage.src = 'assets/resource images/selectedTile.png'; // Imagen para tile seleccionado
 
 // Configuración del tamaño del canvas
 canvas.width = window.innerWidth;
@@ -62,6 +62,7 @@ const gridHeight = 8;  // Número de tiles en alto
 
 let hoveredTile = { x: -1, y: -1 };
 let pieces = null
+let selectedTile = null
 
 // Función para convertir coordenadas de cuadrícula 2D a coordenadas isométricas
 function toIso(x, y) {
@@ -110,7 +111,9 @@ function drawGrid() {
             const tileToDraw = (x + y) % 2 === 0 ? tileWhite : tileBlack;
 
             // Si el tile está bajo el cursor, dibujar un efecto de resaltado
-            if (hoveredTile.x === x && hoveredTile.y === y) {
+            if (hoveredTile.x === x && hoveredTile.y === y && (
+                !selectedTile || selectedTile.x !== x || selectedTile.y !== y
+            )) {
                 // Usar una escala o desplazamiento para resaltar el tile
                 const highlightOffsetY = -5; // Desplazamiento hacia arriba para efecto de resaltado
                 const highlightScale = 1.1; // Escala del tile resaltado
@@ -125,6 +128,16 @@ function drawGrid() {
             } else { // Dibujar el tile normal
                 ctx.drawImage(
                     tileToDraw,
+                    offsetX + isoPos.x - tileSize / 2,
+                    offsetY + isoPos.y,
+                    tileSize,
+                    tileHeight
+                );
+            }
+
+            if (selectedTile && selectedTile.x === x && selectedTile.y == y) {
+                ctx.drawImage(
+                    selectedTileImage,
                     offsetX + isoPos.x - tileSize / 2,
                     offsetY + isoPos.y,
                     tileSize,
@@ -195,7 +208,9 @@ function drawPieces() {
     pieces.forEach(piece => {
         const isoPos = toIso(piece.x, piece.y);
 
-        if (hoveredTile.x == piece.x && hoveredTile.y == piece.y) {
+        if (hoveredTile.x == piece.x && hoveredTile.y == piece.y && (
+            !selectedTile || selectedTile.x !== piece.x || selectedTile.y !== piece.y
+        )) {
             // Usar una escala o desplazamiento para resaltar el tile
             const highlightOffsetY = -25; // Desplazamiento hacia arriba para efecto de resaltado
             const highlightScale = 1.1; // Escala del tile resaltado
@@ -232,6 +247,19 @@ canvas.addEventListener('mousemove', (event) => {
     drawGrid();
     drawPieces();
 });
+
+canvas.addEventListener('click', event => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    selectedTile = toGrid(mouseX, mouseY);
+
+    document.getElementById('debug1').innerText = `row: ${hoveredTile.x} - col: ${hoveredTile.y}`
+
+    drawGrid();
+    drawPieces();
+})
 
 // Inicializar el juego dibujando la cuadrícula y las piezas
 drawGrid();
