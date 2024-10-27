@@ -91,9 +91,9 @@ function toGrid(screenX, screenY) {
     const gridX = (screenX - offsetX) * inv.a + (screenY - offsetY) * inv.b;
     const gridY = (screenX - offsetX) * inv.c + (screenY - offsetY) * inv.d;
 
-    return gridX <= 8 && gridY <= 8 && gridX > 0 && gridY > 0 ? {
+    return {
         x: Math.floor(gridX), y: Math.floor(gridY)
-    } : {x: 0, y: 0};
+    };
 }
 
 // Función para dibujar la cuadrícula isométrica
@@ -109,13 +109,7 @@ function drawGrid() {
             const tileToDraw = (x + y) % 2 === 0 ? tileWhite : tileBlack;
 
             // Dibujar el tile normal
-            ctx.drawImage(
-                tileToDraw,
-                offsetX + isoPos.x - tileSize / 2,
-                offsetY + isoPos.y,
-                tileSize,
-                tileHeight
-            );
+            
 
             // Si el tile está bajo el cursor, dibujar un efecto de resaltado
             if (hoveredTile.x === x && hoveredTile.y === y) {
@@ -129,6 +123,14 @@ function drawGrid() {
                     offsetY + isoPos.y + highlightOffsetY,
                     tileSize * highlightScale,
                     tileHeight * highlightScale
+                );
+            } else {
+                ctx.drawImage(
+                    tileToDraw,
+                    offsetX + isoPos.x - tileSize / 2,
+                    offsetY + isoPos.y,
+                    tileSize,
+                    tileHeight
                 );
             }
         }
