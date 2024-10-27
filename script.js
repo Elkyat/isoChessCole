@@ -91,7 +91,9 @@ function toGrid(screenX, screenY) {
     const gridX = (screenX - offsetX) * inv.a + (screenY - offsetY) * inv.b;
     const gridY = (screenX - offsetX) * inv.c + (screenY - offsetY) * inv.d;
 
-    return { x: Math.floor(gridX), y: Math.floor(gridY) };
+    return gridX <= 8 && gridY <= 8 && gridX > 0 && gridY > 0 ? {
+        x: Math.floor(gridX), y: Math.floor(gridY)
+    } : {x: 0, y: 0};
 }
 
 // Función para dibujar la cuadrícula isométrica
@@ -188,6 +190,9 @@ canvas.addEventListener('mousemove', (event) => {
     const mouseY = event.clientY - rect.top;
 
     hoveredTile = toGrid(mouseX, mouseY);
+
+    document.getElementById('debug1').innerText = `row: ${hoveredTile.x} - col: ${hoveredTile.y}`
+
     drawGrid();
     drawPieces();
 });
