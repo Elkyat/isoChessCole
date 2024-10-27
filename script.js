@@ -61,6 +61,7 @@ const gridWidth = 8;   // Número de tiles en ancho
 const gridHeight = 8;  // Número de tiles en alto
 
 let hoveredTile = { x: -1, y: -1 };
+let pieces = null
 
 // Función para convertir coordenadas de cuadrícula 2D a coordenadas isométricas
 function toIso(x, y) {
@@ -108,9 +109,6 @@ function drawGrid() {
             const isoPos = toIso(x, y);
             const tileToDraw = (x + y) % 2 === 0 ? tileWhite : tileBlack;
 
-            // Dibujar el tile normal
-            
-
             // Si el tile está bajo el cursor, dibujar un efecto de resaltado
             if (hoveredTile.x === x && hoveredTile.y === y) {
                 // Usar una escala o desplazamiento para resaltar el tile
@@ -124,7 +122,7 @@ function drawGrid() {
                     tileSize * highlightScale,
                     tileHeight * highlightScale
                 );
-            } else {
+            } else { // Dibujar el tile normal
                 ctx.drawImage(
                     tileToDraw,
                     offsetX + isoPos.x - tileSize / 2,
@@ -142,51 +140,70 @@ function drawPieces() {
     const offsetX = canvas.width / 2;
     const offsetY = canvas.height / 4;
 
-    const pieces = [
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 0, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 1, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 2, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 3, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 4, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 5, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 6, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 7, y: 6 },
-        { img: pieceImagesLoaded[FENChar.BlackRook], x: 0, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 1, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 2, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackQueen], x: 3, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackKing], x: 4, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 5, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 6, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackRook], x: 7, y: 7 },
+    if (pieces == null) {
+        pieces = [
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 0, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 1, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 2, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 3, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 4, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 5, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 6, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackPawn], x: 7, y: 6 },
+            { img: pieceImagesLoaded[FENChar.BlackRook], x: 0, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackKnight], x: 1, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackBishop], x: 2, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackQueen], x: 3, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackKing], x: 4, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackBishop], x: 5, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackKnight], x: 6, y: 7 },
+            { img: pieceImagesLoaded[FENChar.BlackRook], x: 7, y: 7 },
 
-        { img: pieceImagesLoaded[FENChar.WhiteRook], x: 0, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 1, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteBishop], x: 2, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteQueen], x: 3, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteKing], x: 4, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteBishop], x: 5, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 6, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhiteRook], x: 7, y: 0 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 0, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 1, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 2, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 3, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 4, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 5, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 6, y: 1 },
-        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 7, y: 1 }
-    ];
+            { img: pieceImagesLoaded[FENChar.WhiteRook], x: 0, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 1, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteBishop], x: 2, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteQueen], x: 3, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteKing], x: 4, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteBishop], x: 5, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 6, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhiteRook], x: 7, y: 0 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 0, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 1, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 2, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 3, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 4, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 5, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 6, y: 1 },
+            { img: pieceImagesLoaded[FENChar.WhitePawn], x: 7, y: 1 }
+        ];
+    }
 
     pieces.forEach(piece => {
+        const offsetX = canvas.width / 2;
+        const offsetY = canvas.height / 4;
         const isoPos = toIso(piece.x, piece.y);
-        ctx.drawImage(
-            piece.img,
-            offsetX + isoPos.x - tileSize / 2,
-            offsetY + isoPos.y - tileHeight / 2,
-            tileSize,
-            tileHeight
-        );
+
+        if (hoveredTile.x == piece.x && hoveredTile.y == piece.y) {
+            // Usar una escala o desplazamiento para resaltar el tile
+            const highlightOffsetY = -30; // Desplazamiento hacia arriba para efecto de resaltado
+            const highlightScale = 1.1; // Escala del tile resaltado
+
+            ctx.drawImage(
+                piece.img,
+                offsetX + isoPos.x - (tileSize * highlightScale) / 2,
+                offsetY + isoPos.y + highlightOffsetY,
+                tileSize * highlightScale,
+                tileHeight * highlightScale
+            );
+        } else {
+            ctx.drawImage(
+                piece.img,
+                offsetX + isoPos.x - tileSize / 2,
+                offsetY + isoPos.y - tileHeight / 2,
+                tileSize,
+                tileHeight
+            );
+        }
     });
 }
 
