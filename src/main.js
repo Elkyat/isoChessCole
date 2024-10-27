@@ -178,6 +178,8 @@ function drawPieces() {
         ];
     }
 
+    pieces = pieces.sort((a, b) => a.y - b.y)
+
     let newPieces = [],
         latestPiece = undefined
     for (i in pieces) {
