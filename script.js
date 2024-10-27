@@ -1,4 +1,4 @@
-// Obtener el canvas y el contexto
+// app.js
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -19,7 +19,7 @@ const FENChar = {
 };
 
 // Asignar imágenes a cada pieza basada en FENChar
-const pieceImages = {
+const pieceImagePaths = {
     [FENChar.WhitePawn]: "assets/resource images/whitePawn.png",
     [FENChar.WhiteKnight]: "assets/resource images/whiteHorse.png",
     [FENChar.WhiteBishop]: "assets/resource images/whiteBishop.png",
@@ -31,37 +31,25 @@ const pieceImages = {
     [FENChar.BlackBishop]: "assets/resource images/redBishop.png",
     [FENChar.BlackRook]: "assets/resource images/redTower.png",
     [FENChar.BlackQueen]: "assets/resource images/redQueen.png",
-    [FENChar.BlackKing]: "assets/resource images/redKing.png",
+    [FENChar.BlackKing]: "assets/resource images/redKing.png"
 };
 
 // Crear objetos Image para cada pieza
 const pieceImagesLoaded = {};
-const totalPieces = Object.keys(pieceImages).length;
-let loadedPiecesCount = 0;
-
-for (const piece in pieceImages) {
-    const img = new Image();
-    img.src = pieceImages[piece];
-    img.onload = () => {
-        loadedPiecesCount++;
-        // Si todas las imágenes están cargadas, dibuja el tablero y las piezas
-        if (loadedPiecesCount === totalPieces) {
-            drawGrid();
-            drawPieces();
-        }
-    };
-    pieceImagesLoaded[piece] = img;
+for (const piece in pieceImagePaths) {
+    pieceImagesLoaded[piece] = new Image();
+    pieceImagesLoaded[piece].src = pieceImagePaths[piece];
 }
 
 // Crear imágenes de los tiles
 const tileBlack = new Image();
-tileBlack.src = 'assets/resource images/tileRed.png';
+tileBlack.src = 'assets/resource images/tileRed.png'; // Asumí que el nombre correcto es tileBlack
 
 const tileWhite = new Image();
-tileWhite.src = 'assets/resource images/tileWhite.png';
+tileWhite.src = 'assets/resource images/tileWhite.png'; // Asumí que el nombre correcto es tileWhite
 
 const selectedTile = new Image();
-selectedTile.src = 'assets/resource images/tileWhite.png'; // Imagen para tile seleccionado
+selectedTile.src = 'assets/resource images/selectedTile.png'; // Imagen para tile seleccionado
 
 // Configuración del tamaño del canvas
 canvas.width = window.innerWidth;
@@ -140,45 +128,70 @@ function drawGrid() {
     }
 }
 
-// Instanciar el ChessBoard (asegúrate de que ChessBoard esté definido en tu entorno)
-const chessBoard = new ChessBoard(); // Asegúrate de que ChessBoard esté definido
-
-// Función para dibujar piezas en la cuadrícula isométrica desde el ChessBoard
+// Función para dibujar piezas en la cuadrícula isométrica
 function drawPieces() {
     const offsetX = canvas.width / 2;
     const offsetY = canvas.height / 4;
 
-    const pieces = chessBoard.chessBoardView;
+    const pieces = [
+        { img: pieceImagesLoaded[FENChar.BlackRook], x: 0, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 1, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 2, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackQueen], x: 3, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackKing], x: 4, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 5, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 6, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackRook], x: 7, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 0, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 1, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 2, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 3, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 4, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 5, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 6, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackPawn], x: 7, y: 6 },
 
-    pieces.forEach((row, y) => {
-        row.forEach((piece, x) => {
-            if (piece) {
-                const isoPos = toIso(x, y);
-                ctx.drawImage(
-                    pieceImagesLoaded[piece],
-                    offsetX + isoPos.x - tileSize / 2,
-                    offsetY + isoPos.y - tileHeight / 2,
-                    tileSize,
-                    tileHeight
-                );
-            }
-        });
+        { img: pieceImagesLoaded[FENChar.WhiteRook], x: 0, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 1, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteBishop], x: 2, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteQueen], x: 3, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteKing], x: 4, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteBishop], x: 5, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 6, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhiteRook], x: 7, y: 0 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 0, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 1, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 2, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 3, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 4, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 5, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 6, y: 1 },
+        { img: pieceImagesLoaded[FENChar.WhitePawn], x: 7, y: 1 }
+    ];
+
+    pieces.forEach(piece => {
+        const isoPos = toIso(piece.x, piece.y);
+        ctx.drawImage(
+            piece.img,
+            offsetX + isoPos.x - tileSize / 2,
+            offsetY + isoPos.y - tileHeight / 2,
+            tileSize,
+            tileHeight
+        );
     });
 }
 
-// Manejar el movimiento del mouse para detectar tile bajo el cursor
+// Eventos del mouse para la detección de tiles
 canvas.addEventListener('mousemove', (event) => {
-    const { x, y } = toGrid(event.clientX, event.clientY);
-    hoveredTile.x = x;
-    hoveredTile.y = y;
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
 
+    hoveredTile = toGrid(mouseX, mouseY);
     drawGrid();
     drawPieces();
-
-    // Mostrar coordenadas en la pantalla
-    const coordinatesDisplay = document.getElementById('coordinatesDisplay');
-    coordinatesDisplay.innerText = `Coordenada: ${x}, ${y}`;
 });
 
-// Inicializar el dibujo del tablero y las piezas
+// Inicializar el juego dibujando la cuadrícula y las piezas
 drawGrid();
+drawPieces();

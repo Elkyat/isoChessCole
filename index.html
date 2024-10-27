@@ -19,13 +19,16 @@
             bottom: 10px;
             left: 10px;
             font-size: 16px;
-            color: #333;
+            color: #fff; /* Cambiar el color para mejorar la visibilidad */
         }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
     <div id="coordinatesDisplay"></div> <!-- Asegúrate de que el div exista -->
-    <script src="script.js"></script>
+    <!-- Asegúrate de que la ruta sea correcta y usa type="module" -->
+    <script type="module" src="app/chess-logic/chess-board.js"></script>
+    <script type="module" src="app/chess-logic/models.js"></script>
+    <script src="script.js"></script> <!-- Asegúrate de que script.js esté en la ruta correcta -->
 </body>
 </html>
