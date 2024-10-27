@@ -1,0 +1,12 @@
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\bin\Debug\datos.dll
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\bin\Debug\datos.pdb
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\bin\Debug\datos.xml
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.vbproj.AssemblyReference.cache
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.Resources.resources
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.vbproj.GenerateResource.cache
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.vbproj.CoreCompileInputs.cache
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.vbproj.Up2Date
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.dll
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.xml
+C:\Users\gaite\Documents\GitHub\isoChessCole\datos\obj\Debug\datos.pdb
