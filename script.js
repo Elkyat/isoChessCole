@@ -69,31 +69,43 @@ function toIso(x, y) {
     return { x: isoX, y: isoY };
 }
 
-// Función para convertir coordenadas de pantalla a coordenadas de cuadrícula
-function toGrid(screenX, screenY) {
+// Función para dibujar la cuadrícula isométrica
+function drawGrid() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     const offsetX = canvas.width / 2;
     const offsetY = canvas.height / 4;
 
-    const a = 0.5 * tileSize;
-    const b = -0.5 * tileSize;
-    const c = 0.25 * tileHeight;
-    const d = 0.25 * tileHeight;
+    for (let x = 0; x < gridWidth; x++) {
+        for (let y = 0; y < gridHeight; y++) {
+            const isoPos = toIso(x, y);
+            const tileToDraw = (x + y) % 2 === 0 ? tileWhite : tileBlack;
 
-    const det = (1 / (a * d - b * c));
+            // Dibujar el tile normal
+            ctx.drawImage(
+                tileToDraw,
+                offsetX + isoPos.x - tileSize / 2,
+                offsetY + isoPos.y,
+                tileSize,
+                tileHeight
+            );
 
-    const inv = {
-        a: det * d,
-        b: det * -b,
-        c: det * -c,
-        d: det * a,
-    };
+            // Si el tile está bajo el cursor, dibujar un efecto de resaltado
+            if (hoveredTile.x === x && hoveredTile.y === y) {
+                // Usar una escala o desplazamiento para resaltar el tile
+                const highlightOffsetY = -10; // Desplazamiento hacia arriba para efecto de resaltado
+                const highlightScale = 1.1; // Escala del tile resaltado
 
-    const gridX = (screenX - offsetX) * inv.a + (screenY - offsetY) * inv.b;
-    const gridY = (screenX - offsetX) * inv.c + (screenY - offsetY) * inv.d;
-
-    return gridX <= 8 && gridY <= 8 && gridX > 0 && gridY > 0 ? {
-        x: Math.floor(gridX), y: Math.floor(gridY)
-    } : {x: 0, y: 0};
+                ctx.drawImage(
+                    tileToDraw,
+                    offsetX + isoPos.x - (tileSize * highlightScale) / 2,
+                    offsetY + isoPos.y + highlightOffsetY,
+                    tileSize * highlightScale,
+                    tileHeight * highlightScale
+                );
+            }
+        }
+    }
 }
 
 // Función para dibujar la cuadrícula isométrica
