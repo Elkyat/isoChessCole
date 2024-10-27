@@ -134,14 +134,6 @@ function drawPieces() {
     const offsetY = canvas.height / 4;
 
     const pieces = [
-        { img: pieceImagesLoaded[FENChar.BlackRook], x: 0, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 1, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 2, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackQueen], x: 3, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackKing], x: 4, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 5, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 6, y: 7 },
-        { img: pieceImagesLoaded[FENChar.BlackRook], x: 7, y: 7 },
         { img: pieceImagesLoaded[FENChar.BlackPawn], x: 0, y: 6 },
         { img: pieceImagesLoaded[FENChar.BlackPawn], x: 1, y: 6 },
         { img: pieceImagesLoaded[FENChar.BlackPawn], x: 2, y: 6 },
@@ -150,6 +142,14 @@ function drawPieces() {
         { img: pieceImagesLoaded[FENChar.BlackPawn], x: 5, y: 6 },
         { img: pieceImagesLoaded[FENChar.BlackPawn], x: 6, y: 6 },
         { img: pieceImagesLoaded[FENChar.BlackPawn], x: 7, y: 6 },
+        { img: pieceImagesLoaded[FENChar.BlackRook], x: 0, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 1, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 2, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackQueen], x: 3, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackKing], x: 4, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackBishop], x: 5, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackKnight], x: 6, y: 7 },
+        { img: pieceImagesLoaded[FENChar.BlackRook], x: 7, y: 7 },
 
         { img: pieceImagesLoaded[FENChar.WhiteRook], x: 0, y: 0 },
         { img: pieceImagesLoaded[FENChar.WhiteKnight], x: 1, y: 0 },
