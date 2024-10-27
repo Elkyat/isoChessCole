@@ -112,7 +112,7 @@ function drawGrid() {
             // Si el tile está bajo el cursor, dibujar un efecto de resaltado
             if (hoveredTile.x === x && hoveredTile.y === y) {
                 // Usar una escala o desplazamiento para resaltar el tile
-                const highlightOffsetY = -10; // Desplazamiento hacia arriba para efecto de resaltado
+                const highlightOffsetY = -5; // Desplazamiento hacia arriba para efecto de resaltado
                 const highlightScale = 1.1; // Escala del tile resaltado
 
                 ctx.drawImage(
@@ -178,14 +178,24 @@ function drawPieces() {
         ];
     }
 
+    let newPieces = [],
+        latestPiece = undefined
+    for (i in pieces) {
+        if (pieces[i].x === hoveredTile.x && pieces[i].y === hoveredTile.y) {
+            latestPiece = pieces[i]
+        } else {
+            newPieces.push(pieces[i])
+        }
+    }
+    pieces = !latestPiece ? [...newPieces] : [...newPieces, latestPiece]
+    console.log(latestPiece ? [...newPieces] : [latestPiece, ...newPieces])
+
     pieces.forEach(piece => {
-        const offsetX = canvas.width / 2;
-        const offsetY = canvas.height / 4;
         const isoPos = toIso(piece.x, piece.y);
 
         if (hoveredTile.x == piece.x && hoveredTile.y == piece.y) {
             // Usar una escala o desplazamiento para resaltar el tile
-            const highlightOffsetY = -30; // Desplazamiento hacia arriba para efecto de resaltado
+            const highlightOffsetY = -25; // Desplazamiento hacia arriba para efecto de resaltado
             const highlightScale = 1.1; // Escala del tile resaltado
 
             ctx.drawImage(
