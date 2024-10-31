@@ -261,6 +261,177 @@ canvas.addEventListener('click', event => {
     drawPieces();
 })
 
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////Movement Logic/////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// Check if a move is valid for the king
+function isKingMoveValid(piece, targetX, targetY) {
+    const dx = Math.abs(targetX - piece.x);
+    const dy = Math.abs(targetY - piece.y);
+
+    // The king can move only one square in any direction
+    return (dx <= 1 && dy <= 1);
+}
+
+// Check if a move is valid for the queen
+function isQueenMoveValid(piece, targetX, targetY) {
+    const dx = Math.abs(targetX - piece.x);
+    const dy = Math.abs(targetY - piece.y);
+
+    // The queen moves like both the rook and the bishop, so we can reuse their movement logic
+    const isRookLikeMove = dx === 0 || dy === 0;
+    const isBishopLikeMove = dx === dy;
+
+    // Check if the move is either rook-like or bishop-like, and that the path is clear
+    if (isRookLikeMove) return isRookMoveValid(piece, targetX, targetY);
+    if (isBishopLikeMove) return isBishopMoveValid(piece, targetX, targetY);
+
+    return false;
+}
+
+
+// Check if a move is valid for a bishop
+function isBishopMoveValid(piece, targetX, targetY) {
+    const dx = Math.abs(targetX - piece.x);
+    const dy = Math.abs(targetY - piece.y);
+
+    // Check for diagonal movement
+    if (dx !== dy) return false;
+
+    // Determine direction of movement
+    const xDirection = targetX > piece.x ? 1 : -1;
+    const yDirection = targetY > piece.y ? 1 : -1;
+
+    // Check path for obstacles
+    let x = piece.x + xDirection;
+    let y = piece.y + yDirection;
+    while (x !== targetX && y !== targetY) {
+        if (pieces.some(p => p.x === x && p.y === y)) return false;
+        x += xDirection;
+        y += yDirection;
+    }
+
+    return true;
+}
+
+// Check if a move is valid for a knight
+function isKnightMoveValid(piece, targetX, targetY) {
+    const dx = Math.abs(targetX - piece.x);
+    const dy = Math.abs(targetY - piece.y);
+
+    // Knight moves in an L shape: two squares in one direction, one square in the other
+    return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
+}
+
+// Check if a move is valid for a rook
+function isRookMoveValid(piece, targetX, targetY) {
+    // Rook can only move in a straight line: either the row or the column must match
+    if (piece.x !== targetX && piece.y !== targetY) {
+        return false; // Not a straight-line move
+    }
+
+    // Check if there’s a piece blocking the rook's path
+    if (piece.x === targetX) { // Vertical move
+        const minY = Math.min(piece.y, targetY);
+        const maxY = Math.max(piece.y, targetY);
+        for (let y = minY + 1; y < maxY; y++) {
+            if (pieces.some(p => p.x === piece.x && p.y === y)) {
+                return false; // Path is blocked
+            }
+        }
+    } else if (piece.y === targetY) { // Horizontal move
+        const minX = Math.min(piece.x, targetX);
+        const maxX = Math.max(piece.x, targetX);
+        for (let x = minX + 1; x < maxX; x++) {
+            if (pieces.some(p => p.y === piece.y && p.x === x)) {
+                return false; // Path is blocked
+            }
+        }
+    }
+
+    return true; // Valid rook move
+}
+
+let selectedPiece = null;
+
+// Function to check if a move is valid for a pawn
+function isPawnMoveValid(piece, targetX, targetY) {
+    if (piece.img === pieceImagesLoaded[FENChar.WhitePawn]) {
+        // White pawn moves
+        if (targetX === piece.x && targetY === piece.y + 1) {
+            return true; // Move forward by one
+        }
+        if (piece.y === 1 && targetX === piece.x && targetY === piece.y + 2) {
+            return true; // Move forward by two from starting position
+        }
+    } else if (piece.img === pieceImagesLoaded[FENChar.BlackPawn]) {
+        // Black pawn moves
+        if (targetX === piece.x && targetY === piece.y - 1) {
+            return true; // Move forward by one
+        }
+        if (piece.y === 6 && targetX === piece.x && targetY === piece.y - 2) {
+            return true; // Move forward by two from starting position
+        }
+    }
+    return false;
+}
+
+// Updated click event to include king and queen movement rules
+canvas.addEventListener('click', event => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    // Convert mouse coordinates to grid coordinates
+    const clickedTile = toGrid(mouseX, mouseY);
+
+    // Boundary check
+    if (clickedTile.x < 0 || clickedTile.x >= gridWidth || clickedTile.y < 0 || clickedTile.y >= gridHeight) {
+        return;
+    }
+
+    if (!selectedPiece) {
+        selectedPiece = pieces.find(piece => piece.x === clickedTile.x && piece.y === clickedTile.y);
+    } else {
+        const targetPiece = pieces.find(piece => piece.x === clickedTile.x && piece.y === clickedTile.y);
+        let isMoveValid = false;
+
+        // Apply movement rules based on the selected piece type
+        if (selectedPiece.img === pieceImagesLoaded[FENChar.WhitePawn] || selectedPiece.img === pieceImagesLoaded[FENChar.BlackPawn]) {
+            isMoveValid = isPawnMoveValid(selectedPiece, clickedTile.x, clickedTile.y);
+        } else if (selectedPiece.img === pieceImagesLoaded[FENChar.WhiteRook] || selectedPiece.img === pieceImagesLoaded[FENChar.BlackRook]) {
+            isMoveValid = isRookMoveValid(selectedPiece, clickedTile.x, clickedTile.y);
+        } else if (selectedPiece.img === pieceImagesLoaded[FENChar.WhiteKnight] || selectedPiece.img === pieceImagesLoaded[FENChar.BlackKnight]) {
+            isMoveValid = isKnightMoveValid(selectedPiece, clickedTile.x, clickedTile.y);
+        } else if (selectedPiece.img === pieceImagesLoaded[FENChar.WhiteBishop] || selectedPiece.img === pieceImagesLoaded[FENChar.BlackBishop]) {
+            isMoveValid = isBishopMoveValid(selectedPiece, clickedTile.x, clickedTile.y);
+        } else if (selectedPiece.img === pieceImagesLoaded[FENChar.WhiteKing] || selectedPiece.img === pieceImagesLoaded[FENChar.BlackKing]) {
+            isMoveValid = isKingMoveValid(selectedPiece, clickedTile.x, clickedTile.y);
+        } else if (selectedPiece.img === pieceImagesLoaded[FENChar.WhiteQueen] || selectedPiece.img === pieceImagesLoaded[FENChar.BlackQueen]) {
+            isMoveValid = isQueenMoveValid(selectedPiece, clickedTile.x, clickedTile.y);
+        }
+
+        // If the move is valid and the target tile is unoccupied, move the selected piece
+        if (isMoveValid) {
+            const targetTileOccupied = pieces.some(piece => piece.x === clickedTile.x && piece.y === clickedTile.y);
+            if (!targetTileOccupied) {
+                selectedPiece.x = clickedTile.x;
+                selectedPiece.y = clickedTile.y;
+                selectedPiece = null; // Deselect after moving
+            }
+        } else {
+            selectedPiece = null; // Deselect if move is invalid
+        }
+    }
+
+    // Redraw the grid and pieces to reflect any changes
+    drawGrid();
+    drawPieces();
+});
+
+///////////////////////////////////////////////////////////////////////////////
+
 // Inicializar el juego dibujando la cuadrícula y las piezas
 drawGrid();
 drawPieces();
