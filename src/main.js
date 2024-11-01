@@ -1,12 +1,11 @@
-// app.js
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-let isWhiteTurn = true;  // Initialize to true, indicating white starts
+let isWhiteTurn = true;
 
 let selectedPiece = null;
 
-// Enum para representar las piezas con FENChar
+
 const FENChar = {
     WhitePawn: "P",
     WhiteKnight: "N",
@@ -22,7 +21,6 @@ const FENChar = {
     BlackKing: "k"
 };
 
-// Asignar imágenes a cada pieza basada en FENChar
 const pieceImagePaths = {
     [FENChar.WhitePawn]: "assets/resource images/whitePawn.png",
     [FENChar.WhiteKnight]: "assets/resource images/whiteHorse.png",
@@ -38,44 +36,39 @@ const pieceImagePaths = {
     [FENChar.BlackKing]: "assets/resource images/redKing.png"
 };
 
-// Crear objetos Image para cada pieza
 const pieceImagesLoaded = {};
 for (const piece in pieceImagePaths) {
     pieceImagesLoaded[piece] = new Image();
     pieceImagesLoaded[piece].src = pieceImagePaths[piece];
 }
 
-// Crear imágenes de los tiles
 const tileBlack = new Image();
-tileBlack.src = 'assets/resource images/tileRed.png'; // Asumí que el nombre correcto es tileBlack
+tileBlack.src = 'assets/resource images/tileRed.png'; 
 
 const tileWhite = new Image();
-tileWhite.src = 'assets/resource images/tileWhite.png'; // Asumí que el nombre correcto es tileWhite
+tileWhite.src = 'assets/resource images/tileWhite.png'; 
 
 const selectedTileImage = new Image();
-selectedTileImage.src = 'assets/resource images/selectedTile.png'; // Imagen para tile seleccionado
+selectedTileImage.src = 'assets/resource images/selectedTile.png';
 
-// Configuración del tamaño del canvas
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const tileSize = 36;  // Ancho de los tiles
-const tileHeight = 36; // Altura de los tiles (para vista isométrica)
-const gridWidth = 8;   // Número de tiles en ancho
-const gridHeight = 8;  // Número de tiles en alto
+const tileSize = 36; 
+const tileHeight = 36; 
+const gridWidth = 8;   
+const gridHeight = 8; 
 
 let hoveredTile = { x: -1, y: -1 };
 let pieces = null
 let selectedTile = null
 
-// Función para convertir coordenadas de cuadrícula 2D a coordenadas isométricas
 function toIso(x, y) {
     const isoX = (x * 0.5 * tileSize) + (y * -0.5 * tileSize);
     const isoY = (x * 0.25 * tileHeight) + (y * 0.25 * tileHeight);
     return { x: isoX, y: isoY };
 }
 
-// Función para convertir coordenadas de pantalla a coordenadas de cuadrícula
 function toGrid(screenX, screenY) {
     const offsetX = canvas.width / 2;
     const offsetY = canvas.height / 4;
@@ -102,7 +95,6 @@ function toGrid(screenX, screenY) {
     };
 }
 
-// Función para dibujar la cuadrícula isométrica
 function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -114,13 +106,11 @@ function drawGrid() {
             const isoPos = toIso(x, y);
             const tileToDraw = (x + y) % 2 === 0 ? tileWhite : tileBlack;
 
-            // Si el tile está bajo el cursor, dibujar un efecto de resaltado
             if (hoveredTile.x === x && hoveredTile.y === y && (
                 !selectedTile || selectedTile.x !== x || selectedTile.y !== y
             )) {
-                // Usar una escala o desplazamiento para resaltar el tile
-                const highlightOffsetY = -5; // Desplazamiento hacia arriba para efecto de resaltado
-                const highlightScale = 1.1; // Escala del tile resaltado
+                const highlightOffsetY = -5; 
+                const highlightScale = 1.1; 
 
                 ctx.drawImage(
                     tileToDraw,
@@ -129,7 +119,7 @@ function drawGrid() {
                     tileSize * highlightScale,
                     tileHeight * highlightScale
                 );
-            } else { // Dibujar el tile normal
+            } else { 
                 ctx.drawImage(
                     tileToDraw,
                     offsetX + isoPos.x - tileSize / 2,
@@ -152,7 +142,6 @@ function drawGrid() {
     }
 }
 
-// Función para dibujar piezas en la cuadrícula isométrica
 function drawPieces() {
     const offsetX = canvas.width / 2;
     const offsetY = canvas.height / 4;
@@ -215,9 +204,8 @@ function drawPieces() {
         if (hoveredTile.x == piece.x && hoveredTile.y == piece.y && (
             !selectedTile || selectedTile.x !== piece.x || selectedTile.y !== piece.y
         )) {
-            // Usar una escala o desplazamiento para resaltar el tile
-            const highlightOffsetY = -25; // Desplazamiento hacia arriba para efecto de resaltado
-            const highlightScale = 1.1; // Escala del tile resaltado
+            const highlightOffsetY = -25; 
+            const highlightScale = 1.1; 
 
             ctx.drawImage(
                 piece.img,
@@ -238,7 +226,6 @@ function drawPieces() {
     });
 }
 
-// Eventos del mouse para la detección de tiles
 canvas.addEventListener('mousemove', (event) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
@@ -266,31 +253,33 @@ canvas.addEventListener('click', event => {
 })
 
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////Pawn Promotion/////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-function promotePawn(piece) {
-    // Check if the piece is a pawn
-    if (piece.img === pieceImagesLoaded[FENChar.WhitePawn] && piece.y === 7) {
-        // Promote white pawn to queen
-        piece.img = pieceImagesLoaded[FENChar.WhiteQueen]; // Change image to white queen
-    } else if (piece.img === pieceImagesLoaded[FENChar.BlackPawn] && piece.y === 0) {
-        // Promote black pawn to queen
-        piece.img = pieceImagesLoaded[FENChar.BlackQueen]; // Change image to black queen
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////Movement Logic/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // Check if a move is valid for the king
 function isKingMoveValid(piece, targetX, targetY) {
+    // Check if it's the correct turn for this king's color
+    if ((isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.WhiteKing]) ||
+        (!isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.BlackKing])) {
+        return false; // Wrong turn for this piece color
+    }
+
     const dx = Math.abs(targetX - piece.x);
     const dy = Math.abs(targetY - piece.y);
 
     // The king can move only one square in any direction
-    return (dx <= 1 && dy <= 1);
+    if (dx > 1 || dy > 1) return false;
+
+    // Check if the target tile is occupied by a piece of the same color
+    const targetPiece = pieces.find(p => p.x === targetX && p.y === targetY);
+    if (targetPiece && ((isWhiteTurn && targetPiece.img === pieceImagesLoaded[FENChar.WhiteKing]) ||
+        (!isWhiteTurn && targetPiece.img === pieceImagesLoaded[FENChar.BlackKing]))) {
+        return false; // Target occupied by same color
+    }
+
+    // Move is valid; toggle the turn
+    isWhiteTurn = !isWhiteTurn;
+    return true;
 }
 
 function isQueenMoveValid(piece, targetX, targetY) {
@@ -303,21 +292,34 @@ function isQueenMoveValid(piece, targetX, targetY) {
     const dx = Math.abs(targetX - piece.x);
     const dy = Math.abs(targetY - piece.y);
 
-    // The queen moves like both the rook and the bishop, so we can reuse their movement logic
-    const isRookLikeMove = dx === 0 || dy === 0;
-    const isBishopLikeMove = dx === dy;
-
-    // Check if the move is either rook-like or bishop-like, and that the path is clear
-    if (isRookLikeMove && isRookMoveValid(piece, targetX, targetY)) {
-        isWhiteTurn = !isWhiteTurn; // Toggle the turn after a valid move
-        return true;
-    }
-    if (isBishopLikeMove && isBishopMoveValid(piece, targetX, targetY)) {
-        isWhiteTurn = !isWhiteTurn; // Toggle the turn after a valid move
-        return true;
+    // The queen can move any number of squares in a straight line, either vertically, horizontally, or diagonally
+    if (dx !== 0 && dy !== 0 && dx !== dy) {
+        return false; // Not a straight-line move (invalid for queen)
     }
 
-    return false;
+    // Determine direction of movement
+    const xDirection = targetX > piece.x ? 1 : targetX < piece.x ? -1 : 0;
+    const yDirection = targetY > piece.y ? 1 : targetY < piece.y ? -1 : 0;
+
+    // Check for obstacles in the queen's path
+    let x = piece.x + xDirection;
+    let y = piece.y + yDirection;
+    while (x !== targetX || y !== targetY) {
+        if (pieces.some(p => p.x === x && p.y === y)) return false; // Path is blocked
+        x += xDirection;
+        y += yDirection;
+    }
+
+    // Check if the target tile is occupied by a piece of the same color
+    const targetPiece = pieces.find(p => p.x === targetX && p.y === targetY);
+    if (targetPiece && ((isWhiteTurn && targetPiece.img === pieceImagesLoaded[FENChar.WhiteQueen]) ||
+        (!isWhiteTurn && targetPiece.img === pieceImagesLoaded[FENChar.BlackQueen]))) {
+        return false; // Target occupied by same color
+    }
+
+    // Move is valid; toggle the turn
+    isWhiteTurn = !isWhiteTurn;
+    return true;
 }
 
 function isBishopMoveValid(piece, targetX, targetY) {
@@ -506,6 +508,39 @@ canvas.addEventListener('click', event => {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// Inicializar el juego dibujando la cuadrícula y las piezas
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 drawGrid();
 drawPieces();
