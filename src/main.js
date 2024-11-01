@@ -2,6 +2,10 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+let isWhiteTurn = true;  // Initialize to true, indicating white starts
+
+let selectedPiece = null;
+
 // Enum para representar las piezas con FENChar
 const FENChar = {
     WhitePawn: "P",
@@ -274,8 +278,13 @@ function isKingMoveValid(piece, targetX, targetY) {
     return (dx <= 1 && dy <= 1);
 }
 
-// Check if a move is valid for the queen
 function isQueenMoveValid(piece, targetX, targetY) {
+    // Check if it's the correct turn for this queen's color
+    if ((isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.WhiteQueen]) ||
+        (!isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.BlackQueen])) {
+        return false; // Wrong turn for this piece color
+    }
+
     const dx = Math.abs(targetX - piece.x);
     const dy = Math.abs(targetY - piece.y);
 
@@ -284,15 +293,25 @@ function isQueenMoveValid(piece, targetX, targetY) {
     const isBishopLikeMove = dx === dy;
 
     // Check if the move is either rook-like or bishop-like, and that the path is clear
-    if (isRookLikeMove) return isRookMoveValid(piece, targetX, targetY);
-    if (isBishopLikeMove) return isBishopMoveValid(piece, targetX, targetY);
+    if (isRookLikeMove && isRookMoveValid(piece, targetX, targetY)) {
+        isWhiteTurn = !isWhiteTurn; // Toggle the turn after a valid move
+        return true;
+    }
+    if (isBishopLikeMove && isBishopMoveValid(piece, targetX, targetY)) {
+        isWhiteTurn = !isWhiteTurn; // Toggle the turn after a valid move
+        return true;
+    }
 
     return false;
 }
 
-
-// Check if a move is valid for a bishop
 function isBishopMoveValid(piece, targetX, targetY) {
+    // Check if it's the correct turn for this bishop's color
+    if ((isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.WhiteBishop]) ||
+        (!isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.BlackBishop])) {
+        return false; // Wrong turn for this piece color
+    }
+
     const dx = Math.abs(targetX - piece.x);
     const dy = Math.abs(targetY - piece.y);
 
@@ -312,20 +331,39 @@ function isBishopMoveValid(piece, targetX, targetY) {
         y += yDirection;
     }
 
+    // Move is valid; toggle the turn
+    isWhiteTurn = !isWhiteTurn; // Toggle the turn after a valid move
     return true;
 }
 
-// Check if a move is valid for a knight
+
 function isKnightMoveValid(piece, targetX, targetY) {
+    // Check if it's the correct turn
+    if ((isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.WhiteKnight]) ||
+        (!isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.BlackKnight])) {
+        return false; // Wrong turn for this piece color
+    }
+
     const dx = Math.abs(targetX - piece.x);
     const dy = Math.abs(targetY - piece.y);
 
     // Knight moves in an L shape: two squares in one direction, one square in the other
-    return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
+    if ((dx === 2 && dy === 1) || (dx === 1 && dy === 2)) {
+        // Toggle the turn after a valid move
+        isWhiteTurn = !isWhiteTurn;
+        return true;
+    }
+
+    return false;
 }
 
-// Check if a move is valid for a rook
 function isRookMoveValid(piece, targetX, targetY) {
+    // Check if it's the correct turn for this rook's color
+    if ((isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.WhiteRook]) ||
+        (!isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.BlackRook])) {
+        return false; // Wrong turn for this piece color
+    }
+
     // Rook can only move in a straight line: either the row or the column must match
     if (piece.x !== targetX && piece.y !== targetY) {
         return false; // Not a straight-line move
@@ -350,32 +388,53 @@ function isRookMoveValid(piece, targetX, targetY) {
         }
     }
 
+    // Toggle the turn after a valid move
+    isWhiteTurn = !isWhiteTurn;
     return true; // Valid rook move
 }
 
-let selectedPiece = null;
-
-// Function to check if a move is valid for a pawn
 function isPawnMoveValid(piece, targetX, targetY) {
+    // Check if it's the correct turn based on pawn color
+    if (isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.WhitePawn]) {
+        return false;  // It's white's turn, but this piece is not a white pawn
+    } else if (!isWhiteTurn && piece.img !== pieceImagesLoaded[FENChar.BlackPawn]) {
+        return false;  // It's black's turn, but this piece is not a black pawn
+    }
+
+    // White pawn moves
     if (piece.img === pieceImagesLoaded[FENChar.WhitePawn]) {
-        // White pawn moves
         if (targetX === piece.x && targetY === piece.y + 1) {
-            return true; // Move forward by one
+            isWhiteTurn = false;  // Switch to black's turn after a valid move
+            return true;  // Move forward by one
         }
         if (piece.y === 1 && targetX === piece.x && targetY === piece.y + 2) {
-            return true; // Move forward by two from starting position
+            isWhiteTurn = false;  // Switch to black's turn after a valid move
+            return true;  // Move forward by two from starting position
         }
-    } else if (piece.img === pieceImagesLoaded[FENChar.BlackPawn]) {
-        // Black pawn moves
+    } 
+    // Black pawn moves
+    else if (piece.img === pieceImagesLoaded[FENChar.BlackPawn]) {
         if (targetX === piece.x && targetY === piece.y - 1) {
-            return true; // Move forward by one
+            isWhiteTurn = true;  // Switch to white's turn after a valid move
+            return true;  // Move forward by one
         }
         if (piece.y === 6 && targetX === piece.x && targetY === piece.y - 2) {
-            return true; // Move forward by two from starting position
+            isWhiteTurn = true;  // Switch to white's turn after a valid move
+            return true;  // Move forward by two from starting position
         }
     }
-    return false;
+
+    return false;  // Invalid move
 }
+
+// Function to check if it's the current piece's turn
+function canMoveThisTurn(piece) {
+    // Check if the piece's color matches the current turn
+    return (isWhiteTurn && piece.color === "white") || (!isWhiteTurn && piece.color === "red");
+}
+
+
+
 
 // Updated click event to include king and queen movement rules
 canvas.addEventListener('click', event => {
