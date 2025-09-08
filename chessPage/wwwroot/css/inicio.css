@@ -1,0 +1,153 @@
+﻿/* Import the custom font */
+@font-face {
+    font-family: 'Akira';
+    src: url('../fonts/Akira Expanded Demo.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    background: linear-gradient(to bottom, black, darkred);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* IN START PAGE */
+
+.square-account {
+    width: 20%; /* 50% of the parent container */
+    height: 25%; /* 50% of the parent container */
+    border-radius: 8px; /* Rounded corners */
+    display: flex;
+    flex-direction: row;
+    margin: 0; /* Reset margin to ensure it aligns */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); /* Visible shadow */
+    position: absolute; /* Absolutely positioned */
+    top: 10px; /* Move slightly down */
+    left: 10px; /* Move slightly to the right */
+    overflow: hidden; /* Ensures no content overflow with rounded corners */
+    border: none; /* Removes visible border */
+}
+
+.square-StartPage {
+    width: 80vw;
+    height: 70vh;
+    border-radius: 8px; /* Rounded corners */
+    display: flex;
+    flex-direction: row;
+    margin-top: 90px; /* Space between logo and square */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); /* Visible shadow */
+    position: relative;
+    overflow: hidden; /* Ensures no content overflow with rounded corners */
+    border: none; /* Removes visible border */
+}
+
+/* ............................................................................. */
+
+.square {
+    width: 70vw;
+    height: 70vh;
+    border-radius: 8px; /* Rounded corners */
+    display: flex;
+    flex-direction: row;
+    margin-top: 90px; /* Space between logo and square */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); /* Visible shadow */
+    position: relative;
+    overflow: hidden; /* Ensures no content overflow with rounded corners */
+    border: none; /* Removes visible border */
+}
+
+.left-section, .right-section {
+    flex: 1; /* Ensures both sections take up equal space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2; /* Place content above the glossy effect */
+    padding: 0; /* No padding to avoid border appearance */
+}
+
+.left-section {
+    background-image: url('../resources/chessfall2.png');
+    background-size: cover;
+    background-position: center left 10%; /* Shift the image 10% to the right */
+    background-repeat: no-repeat;
+    border-radius: 8px 0 0 8px;
+    overflow: hidden;
+}
+
+.right-section {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distributes space between elements */
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    border-radius: 0 8px 8px 0; /* Rounded corners on the right */
+}
+
+.top-rectangle, .bottom-rectangle {
+    width: 90%; /* 90% of the container's width */
+    height: 60px; /* Adjust height as needed */
+    background-color: #d3d3d3; /* Light gray color */
+    border-radius: 12px; /* Rounded corners for the rectangles */
+    margin-bottom: 20px; /* Space between rectangles and text */
+}
+
+.bottom-rectangle {
+    margin-bottom: 0; /* No space after the bottom rectangle */
+}
+
+.welcome-title {
+    font-family: 'Akira', sans-serif; /* Apply the custom Akira font */
+    font-weight: bold;
+    font-size: 48px; /* Increased size for better visibility */
+    margin-top: 90px; /* Increased value to move the title further down */
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+    color: black; /* Changed color to black */
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 60px;
+}
+
+    .login-form input, .login-form button {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .login-form button {
+        background-color: black; /* Black background for the login button */
+        color: white; /* White text color */
+        border: none;
+        cursor: pointer;
+    }
+
+        .login-form button:hover {
+            background-color: #333; /* Slightly lighter black when hovering */
+        }
